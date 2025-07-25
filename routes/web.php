@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,8 +24,7 @@ class Task
         public bool $completed,
         public string $created_at,
         public string $updated_at
-    ) {
-    }
+    ) {}
 }
 
 $tasks = [
@@ -66,14 +66,25 @@ $tasks = [
     ),
 ];
 
-Route::get('/', function () use ($tasks) {
+Route::get('/', function () {
+    return redirect()->route('tasks.index');
+});
+
+Route::get('/tasks', function () use ($tasks) {
     return view('index', [
         'tasks' => $tasks
     ]);
 })->name('tasks.index');
 
-Route::get('/{id}', function ($id) {
-    return 'One single task';
+Route::get('/tasks/{id}', function ($id) use ($tasks) {
+    $task = collect($tasks)->firstWhere('id', $id); /// pelo o que entendi, o collect converte o array em um collection object do laravel
+    // o firstWhere pega o primeiro item que bater o valor com a key
+
+    if (!$task) {
+        abort(Response::HTTP_NOT_FOUND);
+    }
+
+    return view('show', ['task' => $task]);
 })->name('tasks.show');
 
 // Route::get('/xxx', function () {
