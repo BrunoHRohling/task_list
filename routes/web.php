@@ -50,7 +50,8 @@ Route::post('/tasks', function (Request $request) {
 
     $task->save(); // Salva nova task na tabela Task
 
-    return redirect()->route('tasks.show', ['id' => $task->id]);
+    return redirect()->route('tasks.show', ['id' => $task->id])
+        ->with('success', 'Task created successfully!');
 })->name('tasks.store');
 
 // Route::get('/xxx', function () {
