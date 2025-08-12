@@ -28,6 +28,11 @@ Route::get('/tasks', function () {
 
 Route::view('/tasks/create', 'create')->name('tasks.create');
 
+Route::get('/tasks/{id}/edit', function ($id) {
+    // find() busca pela chave primaria da classe chamada. Ex: Task::find($id)
+    return view('edit', ['task' => Task::findOrFail($id)]);
+})->name('tasks.edit');
+
 // pelo o que entendi, o collect converte o array em um collection object do laravel
 // $task = collect($tasks)->firstWhere('id', $id);
 // o firstWhere pega o primeiro item que bater o valor com a key
@@ -53,6 +58,24 @@ Route::post('/tasks', function (Request $request) {
     return redirect()->route('tasks.show', ['id' => $task->id])
         ->with('success', 'Task created successfully!');
 })->name('tasks.store');
+
+Route::put('/tasks/{id}', function ($id, Request $request) {
+    $data = $request->validate([ // Valida os campos da requisição conforme as regras definidas
+        'title' => 'required|max:255',
+        'description' => 'required',
+        'long_description' => 'required',
+    ]);
+
+    $task = Task::findOrFail($id); // Cria instância da classe Task e adiciona aos atributos da classe seus respectivos novos valores
+    $task->title = $data['title'];
+    $task->description = $data['description'];
+    $task->long_description = $data['long_description'];
+
+    $task->save(); // Salva nova task na tabela Task
+
+    return redirect()->route('tasks.show', ['id' => $task->id])
+        ->with('success', 'Task updated successfully!');
+})->name('tasks.update');
 
 // Route::get('/xxx', function () {
 //     return 'Hello';
