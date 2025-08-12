@@ -2,8 +2,6 @@
 
 use App\Http\Requests\TaskRequest;
 use App\Models\Task;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,18 +60,6 @@ Route::delete('tasks/{task}', function (Task $task) {
     return redirect()->route('tasks.index')
         ->with('success', 'Task deleted successfully!');
 })->name('tasks.destroy');
-
-// Route::get('/xxx', function () {
-//     return 'Hello';
-// })->name('hello');
-
-// Route::get('/hallo', function () {
-//     return redirect()->route('hello');
-// });
-
-// Route::get('/greet/{name}', function ($name) {
-//     return 'Hello ' . $name . '!';
-// });
 
 Route::fallback(function () {
     return 'Still got somewhere!';
