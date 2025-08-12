@@ -11,6 +11,7 @@
 
     <div>
         @if (session()->has('success'))
+    {{-- Se houver alguma flash message de sucesso, exibe aqui --}}
             <div>{{ session('success') }}</div>
         @endif
         @yield('content')

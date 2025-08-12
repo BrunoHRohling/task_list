@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Requests\TaskRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -28,52 +29,46 @@ Route::get('/tasks', function () {
 
 Route::view('/tasks/create', 'create')->name('tasks.create');
 
-Route::get('/tasks/{id}/edit', function ($id) {
+Route::get('/tasks/{task}/edit', function (Task $task) {
     // find() busca pela chave primaria da classe chamada. Ex: Task::find($id)
-    return view('edit', ['task' => Task::findOrFail($id)]);
+    return view('edit', ['task' => $task]);
 })->name('tasks.edit');
 
 // pelo o que entendi, o collect converte o array em um collection object do laravel
 // $task = collect($tasks)->firstWhere('id', $id);
 // o firstWhere pega o primeiro item que bater o valor com a key
-Route::get('/tasks/{id}', function ($id) {
+Route::get('/tasks/{task}', function (Task $task) {
     // find() busca pela chave primaria da classe chamada. Ex: Task::find($id)
-    return view('show', ['task' => Task::findOrFail($id)]);
+    return view('show', ['task' => $task]);
 })->name('tasks.show');
 
-Route::post('/tasks', function (Request $request) {
-    $data = $request->validate([ // Valida os campos da requisição conforme as regras definidas
-        'title' => 'required|max:255',
-        'description' => 'required',
-        'long_description' => 'required',
-    ]);
+Route::post('/tasks', function (TaskRequest $request) {
+    // $data = $request->validated();
 
-    $task = new Task; // Cria instância da classe Task e adiciona aos atributos da classe seus respectivos novos valores
-    $task->title = $data['title'];
-    $task->description = $data['description'];
-    $task->long_description = $data['long_description'];
+    // $task = new Task; // Cria instância da classe Task e adiciona aos atributos da classe seus respectivos novos valores
+    // $task->title = $data['title'];
+    // $task->description = $data['description'];
+    // $task->long_description = $data['long_description'];
 
-    $task->save(); // Salva nova task na tabela Task
+    // $task->save(); // Salva nova task na tabela Task
+    $task = Task::create($request->validated());
 
-    return redirect()->route('tasks.show', ['id' => $task->id])
+    return redirect()->route('tasks.show', ['task' => $task->id])
         ->with('success', 'Task created successfully!');
 })->name('tasks.store');
 
-Route::put('/tasks/{id}', function ($id, Request $request) {
-    $data = $request->validate([ // Valida os campos da requisição conforme as regras definidas
-        'title' => 'required|max:255',
-        'description' => 'required',
-        'long_description' => 'required',
-    ]);
+Route::put('/tasks/{task}', function (Task $task, TaskRequest $request) {
+    // $data = $request->validated();
 
-    $task = Task::findOrFail($id); // Cria instância da classe Task e adiciona aos atributos da classe seus respectivos novos valores
-    $task->title = $data['title'];
-    $task->description = $data['description'];
-    $task->long_description = $data['long_description'];
+    // // Cria instância da classe Task e adiciona aos atributos da classe seus respectivos novos valores
+    // $task->title = $data['title'];
+    // $task->description = $data['description'];
+    // $task->long_description = $data['long_description'];
 
-    $task->save(); // Salva nova task na tabela Task
+    // $task->save(); // Salva nova task na tabela Task
+    $task->update($request->validated());
 
-    return redirect()->route('tasks.show', ['id' => $task->id])
+    return redirect()->route('tasks.show', ['task' => $task->id])
         ->with('success', 'Task updated successfully!');
 })->name('tasks.update');
 
