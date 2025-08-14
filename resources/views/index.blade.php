@@ -12,4 +12,11 @@
         <div>There are no tasks!</div>
     @endforelse
 
+    {{-- Pagination --}}
+    @if ($tasks->count())
+        <nav>
+            {{ $tasks->links() }}
+        </nav>
+    @endif
+
 @endsection
