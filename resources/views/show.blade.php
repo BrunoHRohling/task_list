@@ -25,7 +25,7 @@
     </div>
 
     <div>
-        <form method="POST" action="{{ route('tasks.toggle-complete', ['task', $task]) }}">
+        <form method="POST" action="{{ route('tasks.toggle-complete', ['task' => $task]) }}">
             @csrf
             @method('PUT')
             <button type="submit">Mark as {{ $task->completed ? 'not completed' : 'completed' }}</button>
